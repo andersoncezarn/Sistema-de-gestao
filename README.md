@@ -1,2 +1,2 @@
-# Sistema-de-Gest-o
+# Sistema
 Sistema para gestão e controle de material de expediente.
