@@ -1,2 +1,3 @@
-# Sistema
-Sistema para gestão e controle de material de expediente.
+# Sistema controle de expediente
+Aplicação em Java para gestão e controle de material de expediente.
+Nessa aplicação foi utilizado: Eclipse, JSF, primefaces, hibernate, phaseListener,...
