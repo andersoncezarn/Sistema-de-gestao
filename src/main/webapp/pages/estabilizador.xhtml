@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formEstabListagem">
+			<p:panel header="Estabilizador - Listagem" style="text-align:center">
+				<p:dataTable id="tblEstabListagem"
+					emptyMessage="Nenhum Registro Encontrado." style="text-align:left"
+					paginator="true" paginatorPosition="bottom"
+					value="#{estabilizadorBean.listaEstabilizadores}"
+					var="estabilizador">
+					<f:facet name="footer">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							update=":formEstabCadastro:pnlEstabCadastro"
+							actionListener="#{estabilizadorBean.novo}" />
+					</f:facet>
+
+					<p:column headerText="Sala">
+						<h:outputText value="#{estabilizador.sala.nome}" />
+					</p:column>
+
+					<p:column headerText="Marca">
+						<h:outputText value="#{estabilizador.marca}" />
+					</p:column>
+
+					<p:column headerText="Tombamento">
+						<h:outputText value="#{estabilizador.tombo}" />
+					</p:column>
+
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{estabilizadorBean.excluir}"
+							update=":mensagem :formEstabListagem:tblEstabListagem">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir o estabilizador?" icon="ui-icon-alert" />
+							<f:attribute name="estabilizadorSelecionado"
+								value="#{estabilizador}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{estabilizadorBean.editar}"
+							update=":mensagem :formEstabCadastro:pnlEstabCadastro"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="estabilizadorSelecionado"
+								value="#{estabilizador}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Datashow - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formEstabCadastro">
+				<h:panelGrid id="pnlEstabCadastro" columns="2">
+
+					<p:outputLabel value="Marca:" />
+					<p:inputText maxlength="30" size="30"
+						value="#{estabilizadorBean.estabilizador.marca}" />
+
+					<p:outputLabel value="Tombamento:" />
+					<p:inputText maxlength="30" size="30"
+						value="#{estabilizadorBean.estabilizador.tombo}" />
+
+					<p:outputLabel value="Sala:" />
+					<p:selectOneMenu filter="true"
+						value="#{estabilizadorBean.estabilizador.sala}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma sala" />
+						<f:selectItems value="#{estabilizadorBean.salas}" var="sala"
+							itemValue="#{sala}" itemLabel="#{sala.nome}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{estabilizadorBean.salvar}"
+						update=":mensagem :formEstabListagem:tblEstabListagem :formEstabCadastro:pnlEstabCadastro"
+						oncomplete="PF('dialogo').hide();" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

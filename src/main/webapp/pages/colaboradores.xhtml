@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formColaboradorListagem">
+			<p:panel>
+				<h2>Cadastrar Novo Colaborador</h2>
+	
+				<p:dataTable id="tblColaboradorListagem"
+					emptyMessage="Nenhum Registro Encontrado." style="text-align:left"
+					paginator="true" paginatorPosition="bottom"
+					value="#{colaboradorBean.listaColaboradores}" var="colaborador">
+					<f:facet name="footer">
+						<p:commandButton value="Cadastrar Novo"
+							oncomplete="PF('dialogo').show();"
+							update=":formColaboradorCadastro:pnlColaboradorCadastro"
+							actionListener="#{colaboradorBean.novo}" icon="ui-icon-plus" />
+					</f:facet>
+
+					<p:column headerText="Nome"
+						sortBy="#{colaborador.funcionario.nome}" style="text-align:center">
+						<h:outputText value="#{colaborador.funcionario.nome}" />
+					</p:column>
+
+					<p:column headerText="Telefone" style="text-align:center"
+						width="20%">
+						<h:outputText value="#{colaborador.funcionario.telefone}" />
+					</p:column>
+
+					<p:column headerText="Ativo" style="text-align:center" width="20%">
+						<h:outputText value="#{colaborador.ativo ? 'Sim' : 'Não'}" />
+					</p:column>
+
+					<p:column headerText="Opções" style="text-align:center" width="10%">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{colaboradorBean.excluir}"
+							update=":mensagem :formColaboradorListagem:tblColaboradorListagem">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir o Colaborador?" icon="ui-icon-alert" />
+							<f:attribute name="colaboradorSelecionado" value="#{colaborador}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{colaboradorBean.editar}"
+							update=":mensagem :formColaboradorCadastro:pnlColaboradorCadastro"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="colaboradorSelecionado" value="#{colaborador}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Colaboradores - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formColaboradorCadastro">
+				<h:panelGrid id="pnlColaboradorCadastro" columns="2">
+
+					<p:outputLabel for="funcionario" value="Funcionario" />
+					<p:selectOneMenu id="funcionario" filter="true"
+						value="#{colaboradorBean.colaborador.funcionario}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="O campo 'Colaborador' é obrigatório.">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um Colaborador" />
+						<f:selectItems value="#{colaboradorBean.funcionarios}"
+							var="funcionario" itemValue="#{funcionario}"
+							itemLabel="#{funcionario.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Ativo:" />
+					<p:selectBooleanCheckbox
+						value="#{colaboradorBean.colaborador.ativo}" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{colaboradorBean.salvar}"
+						update=":mensagem :formColaboradorCadastro:pnlColaboradorCadastro :formColaboradorListagem:tblColaboradorListagem"
+						oncomplete="PF('dialogo').hide();" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

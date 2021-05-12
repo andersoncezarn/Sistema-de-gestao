@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+
+		<!-- Configurações de conexão com o Banco de Dados -->
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://localhost:3306/setor2</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">q1w2e3r4</property>
+
+		<!-- Pool de conexões JDBC (Deixar Padrão) -->
+		<property name="connection.pool_size">1</property>
+
+		<!-- Dialeto SQL (Idioma q o hibernate vai conversar) -->
+		<property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+
+		<!-- Gerenciamnto do contexto das sessão (Deixar Padrão) -->
+		<property name="current_session_context_class">thread</property>
+
+		<!-- Cache de segundo nível (Deixar Padrão por enquanto) -->
+		<property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+		<!-- Exibir os comandos SQL - Mostra as SQLs Geradas (Deixar Padrão) -->
+		<property name="show_sql">true</property>
+
+		<!-- Cria as tabelas (Deixar Padrão): update - atualiza; create- apaga 
+			todas as tabelas e cria novamante; validate: utilizado para sistema com as 
+			tabelas prontas, atualiza se java igual a tabela -->
+		<property name="hbm2ddl.auto">update</property>
+
+		<!-- Mapeamento das Entidades -->
+		<mapping class="br.com.setor2.domain.Usuario" />
+		<mapping class="br.com.setor2.domain.Funcionario" />
+		<mapping class="br.com.setor2.domain.Equipamento" />
+		<mapping class="br.com.setor2.domain.Sala" />
+		<mapping class="br.com.setor2.domain.Ar" />
+		<mapping class="br.com.setor2.domain.ManutencaoAr" />
+		<mapping class="br.com.setor2.domain.ManutencaoGTI" />
+		<mapping class="br.com.setor2.domain.RequisicaoMaterial" />
+		<mapping class="br.com.setor2.domain.RequisicaoManutencao" />
+		<mapping class="br.com.setor2.domain.Datashow" />
+		<mapping class="br.com.setor2.domain.Som" />
+		<mapping class="br.com.setor2.domain.Estabilizador" />
+		<mapping class="br.com.setor2.domain.Colaborador" />
+		<mapping class="br.com.setor2.domain.Estoque" />
+		<mapping class="br.com.setor2.domain.Unidade" />
+		<mapping class="br.com.setor2.domain.Almoxarifado" />
+		<mapping class="br.com.setor2.domain.ProdSelecionado" />
+		<mapping class="br.com.setor2.domain.Agua" />
+
+
+	</session-factory>
+
+</hibernate-configuration>

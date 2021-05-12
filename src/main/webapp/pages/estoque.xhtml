@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Estoque do Almoxarifado">
+				<p:dataTable id="tabela" emptyMessage="Nenhum Registro Encontrado."
+					paginator="true" value="#{estoqueBean.listaEstoque}" var="estoque"
+					rows="5">
+					<f:facet name="footer">
+						<h:panelGrid columns="3">
+							<p:commandButton icon="ui-icon-plus"
+								actionListener="#{estoqueBean.novo}"
+								oncomplete="PF('dialogo').show();"
+								update=":mensagem :formCadastro:painel">
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+
+							<p:commandButton value="Nova Unidade"
+								actionListener="#{unidadeBean.novo}"
+								oncomplete="PF('dialogoCadastroUnidade').show();"
+								update=":mensagem :formCadastroUnidade:painelUnidade">
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+
+							<p:commandButton icon="ui-icon-print">
+
+							</p:commandButton>
+
+						</h:panelGrid>
+					</f:facet>
+
+
+					<p:column headerText="Produto">
+						<h:outputText value="#{estoque.produto}" />
+					</p:column>
+
+					<p:column headerText="Quantidade">
+						<h:outputText value="#{estoque.quantidade}" />
+					</p:column>
+
+					<p:column headerText="Unidade">
+						<h:outputText value="#{estoque.unidade.descricao}" />
+					</p:column>
+
+					<p:column headerText="Preço">
+						<h:outputText value="#{estoque.preco}" />
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{estoqueBean.excluir}"
+							update=":mensagem :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir o produto?" icon="ui-icon-alert" />
+							<f:attribute name="estoqueSelecionado" value="#{estoque}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{estoqueBean.editar}"
+							update=":mensagem :formCadastro:painel"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="estoqueSelecionado" value="#{estoque}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Produtos - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro" enctype="multipart/form-data">
+				<h:panelGrid id="painel" columns="2">
+					<p:outputLabel for="produto" value="Produto" />
+					<p:inputText id="produto" maxlength="50" size="30"
+						value="#{estoqueBean.estoque.produto}" required="true"
+						requiredMessage="O campo produto é obrigatório" />
+
+					<p:outputLabel for="quantidade" value="Quantidade:" />
+					<p:inputText id="quantidade" maxlength="5" size="10"
+						value="#{estoqueBean.estoque.quantidade}" required="true"
+						requiredMessage="O campo quantidade é obrigatório"
+						converterMessage="informe um valor válido para o campo quantidade"
+						validatorMessage="Informe um valor entre 0 e 10000">
+						<f:validateLongRange minimum="0" maximum="10000" />
+					</p:inputText>
+
+					<p:outputLabel for="unidade" value="Unidade" />
+					<p:selectOneMenu id="unidade" filter="true"
+						value="#{estoqueBean.estoque.unidade}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="O campo unidade é obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma unidade" />
+						<f:selectItems value="#{estoqueBean.listaUnidades}" var="unidade"
+							itemValue="#{unidade}" itemLabel="#{unidade.descricao}" />
+
+					</p:selectOneMenu>
+
+					<p:outputLabel for="preco" value="Preço: " />
+					<p:inputText id="preco" maxlength="5" size="10"
+						value="#{estoqueBean.estoque.preco}">
+						<f:validateLongRange minimum="0" maximum="10000" />
+					</p:inputText>
+
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{estoqueBean.salvar}"
+						update=":mensagem :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Unidade"
+			widgetVar="dialogoCadastroUnidade" draggable="false"
+			resizable="false" modal="true" closable="false">
+			<h:form id="formCadastroUnidade">
+				<h:panelGrid id="painelUnidade" columns="2">
+					<p:outputLabel for="unidadeCadastro" value="Unidade" />
+					<p:inputText id="unidadeCadastro" maxlength="30" size="30"
+						value="#{unidadeBean.unidade.descricao}" required="true"
+						requiredMessage="O campo 'Unidade' é obrigatório" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{unidadeBean.salvar}"
+						update=":mensagem :formCadastroUnidade:painelUnidade :formListagem:tabela" />
+					<p:commandButton value="Fechar"
+						oncomplete="PF('dialogoCadastroUnidade').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+
+		</p:dialog>
+	</ui:define>
+</ui:composition>

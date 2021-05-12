@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formulario">
+			<p:panel header="Estoque do Almoxarifado">
+				<p:dataTable id="tabelaEstoque" paginatorPosition="bottom"
+					emptyMessage="Nenhum registro encontrado." paginator="true"
+					value="#{almoxarifadoBean.listaEstoque}" var="estoque" rows="3">
+
+					<p:column headerText="Produto" filterBy="#{estoque.produto}"
+						sortBy="#{estoque.produto}">
+						<h:outputText value="#{estoque.produto}" />
+					</p:column>
+
+					<p:column headerText="Quantidade">
+						<h:outputText value="#{estoque.quantidade}" />
+					</p:column>
+
+
+					<p:column headerText="Unidade">
+						<h:outputText value="#{estoque.unidade.descricao}" />
+					</p:column>
+
+					<p:column headerText="Preço" sortBy="#{estoque.preco}">
+						<h:outputText value="#{estoque.preco}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-plus"
+							update=":formulario:tabelaSelecionados :formulario:painelFinalizar"
+							actionListener="#{almoxarifadoBean.adicionar}">
+							<f:attribute name="estoqueSelecionado" value="#{estoque}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Produtos Selecionados">
+				<p:dataTable id="tabelaSelecionados" paginatorPosition="bottom"
+					emptyMessage="Nenhum registro encontrado." paginator="true"
+					value="#{almoxarifadoBean.listaSelecionados}" var="prodSelecionado"
+					rows="3">
+
+					<p:column headerText="Produto">
+						<h:outputText value="#{prodSelecionado.estoque.produto}" />
+					</p:column>
+
+					<p:column headerText="Preço Un.">
+						<h:outputText value="#{prodSelecionado.estoque.preco}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Qtde.">
+						<h:outputText value="#{prodSelecionado.quantidade}" />
+					</p:column>
+
+					<p:column headerText="Preço Parcial">
+						<h:outputText value="#{prodSelecionado.precoParcial}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-minus"
+							actionListener="#{almoxarifadoBean.remover}"
+							update=":formulario:tabelaSelecionados :formulario:painelFinalizar">
+							<f:attribute name="prodSelecionado" value="#{prodSelecionado}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Finalizar Entrega">
+				<h:panelGrid id="painelFinalizar" columns="9">
+
+					<p:outputLabel value="Servidor:" />
+					<p:selectOneMenu value="#{almoxarifadoBean.almoxarifado.usuario}"
+						converter="omnifaces.SelectItemsConverter" filter="true">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um funcionário" />
+						<f:selectItems value="#{almoxarifadoBean.listaUsuarios}"
+							var="usuario" itemValue="#{usuario}"
+							itemLabel="#{usuario.funcionario.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="colaborador" value="Terceirizado:" />
+					<p:selectOneMenu id="colaborador"
+						value="#{almoxarifadoBean.almoxarifado.colaborador}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um colaborador" />
+						<f:selectItems value="#{almoxarifadoBean.listaColaboradores}"
+							var="colaborador" itemValue="#{colaborador}"
+							itemLabel="#{colaborador.funcionario.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Total: R$" />
+					<h:outputText value="#{almoxarifadoBean.almoxarifado.precoTotal}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+
+					<p:outputLabel value="Data:" />
+					<h:outputText value="#{almoxarifadoBean.almoxarifado.horario}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<p:commandButton value="Finalizar"
+						actionListener="#{almoxarifadoBean.salvar}"
+						update=":mensagem :formulario:tabelaSelecionados :formulario:painelFinalizar" />
+
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

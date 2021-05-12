@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formEqListagem">
+			<p:panel header="Equipamentos - Listagem" style="text-align:center">
+				<p:dataTable id="tblEqListagem"
+					emptyMessage="Nenhum Registro Encontrado." style="text-align:left"
+					paginator="true" paginatorPosition="bottom"
+					value="#{equipamentoBean.listaEquipamentos}" var="equipamento">
+					<f:facet name="footer">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							update=":formEqCadastro:pnlEqCadastro"
+							actionListener="#{equipamentoBean.novo}" />
+					</f:facet>
+
+					<p:column headerText="Marca">
+						<h:outputText value="#{equipamento.marca}" />
+					</p:column>
+
+					<p:column headerText="Tombo">
+						<h:outputText value="#{equipamento.tombo}" />
+					</p:column>
+
+					<p:column headerText="Tipo">
+						<h:outputText value="#{equipamento.tipo}" />
+					</p:column>
+
+					<p:column headerText="Sala">
+						<h:outputText value="#{equipamento.sala.nome}" />
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{equipamentoBean.excluir}"
+							update=":mensagem :formEqListagem:tblEqListagem">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir o equipamento?" icon="ui-icon-alert" />
+							<f:attribute name="equipamentoSelecionado" value="#{equipamento}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{equipamentoBean.editar}"
+							update=":mensagem :formEqCadastro:pnlEqCadastro"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="equipamentoSelecionado" value="#{equipamento}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Equipamento - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formEqCadastro">
+				<h:panelGrid id="pnlEqCadastro" columns="2">
+
+					<p:outputLabel value="Marca:" />
+					<p:inputText maxlength="30" size="30"
+						value="#{equipamentoBean.equipamento.marca}" />
+
+					<p:outputLabel value="Tombo:" />
+					<p:inputText maxlength="30" size="30"
+						value="#{equipamentoBean.equipamento.tombo}" />
+
+					<p:outputLabel value="Tipo:" />
+					<p:inputText maxlength="20" size="30"
+						value="#{equipamentoBean.equipamento.tipo}" />
+
+					<p:outputLabel value="Sala:" />
+					<p:selectOneMenu filter="true"
+						value="#{equipamentoBean.equipamento.sala}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma sala" />
+						<f:selectItems value="#{equipamentoBean.salas}" var="sala"
+							itemValue="#{sala}" itemLabel="#{sala.nome}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{equipamentoBean.salvar}"
+						update=":mensagem :formEqListagem:tblEqListagem :formEqCadastro:pnlEqCadastro"
+						oncomplete="PF('dialogo').hide();" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

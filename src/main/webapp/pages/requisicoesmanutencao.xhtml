@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formReqManut">
+			<p:panel>
+				<h2>Requisições de Manutenção</h2>
+				<p:dataTable id="tblReqManut"
+					emptyMessage="Nenhum Registro Encontrado." style="text-align:left"
+					paginator="true" paginatorPosition="bottom"
+					value="#{requisicaoManutencaoBean.requisicoes}"
+					var="requisicaoManut" rows="20">
+					<f:facet name="footer">
+						<p:commandButton value="Cadastrar Nova Requisição"
+							oncomplete="PF('dialogo').show();"
+							update=":formReqManutCad:pnlReqManutCad"
+							actionListener="#{requisicaoManutencaoBean.novo}"
+							icon="ui-icon-plus" />
+					</f:facet>
+
+					<p:column headerText="Data Cadastro"
+						sortBy="#{requisicaoManut.dataCadastro}"
+						filterBy="#{requisicaoManut.dataCadastro}"
+						style="text-align: center" width="13%">
+						<h:outputText value="#{requisicaoManut.dataCadastro}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Requisição"
+						sortBy="#{requisicaoManut.numero}"
+						filterBy="#{requisicaoManut.numero}" style="text-align: center"
+						width="12%">
+						<h:outputText value="#{requisicaoManut.numero}" />
+					</p:column>
+
+					<p:column headerText="Tipo da Requisicao"
+						style="text-align: center" sortBy="#{requisicaoManut.tipoServico}"
+						filterBy="#{requisicaoManut.tipoServico}" width="12%">
+						<h:outputText value="#{requisicaoManut.tipoServico}" />
+					</p:column>
+
+					<p:column headerText="Descriçao" style="text-align: center"
+						width="15%">
+						<h:outputText value="#{requisicaoManut.descricao}" />
+					</p:column>
+
+					<p:column headerText="Local" style="text-align: center" width="12%">
+						<h:outputText value="#{requisicaoManut.local}" />
+					</p:column>
+
+					<p:column headerText="Data Atendimento" style="text-align: center"
+						width="12%">
+						<h:outputText value="#{requisicaoManut.dataAtendimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Data Serviço" style="text-align: center"
+						width="12%">
+						<h:outputText value="#{requisicaoManut.dataServico}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Observação" style="text-align: center"
+						width="15%">
+						<h:outputText value="#{requisicaoManut.observacao}" />
+					</p:column>
+
+
+					<p:column headerText="Finalizada" style="text-align: center"
+						width="12%">
+						<h:outputText
+							value="#{requisicaoManut.finalizado ? 'Sim' : 'Não'}" />
+					</p:column>
+
+					<p:column headerText="Opções" style="text-align: center"
+						width="12%">
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{requisicaoManutencaoBean.editar}"
+							update=":mensagem :formReqManutCad:pnlReqManutCad"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="RequisicaoManutSelecionada"
+								value="#{requisicaoManut}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{requisicaoManutencaoBean.excluir}"
+							update=":mensagem :formReqManut:tblReqManut">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir a Requisição?" icon="ui-icon-alert" />
+							<f:attribute name="RequisicaoManutSelecionada"
+								value="#{requisicaoManut}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<p:dialog widgetVar="dialogo" draggable="false" resizable="false"
+			modal="true" closable="false">
+			<h:form id="formReqManutCad">
+				<h2>Requisição de Manutenção</h2>
+				<h:panelGrid id="pnlReqManutCad" columns="2">
+
+					<p:outputLabel value="Data Cadastro:" for="data"/>
+					<p:calendar id="data"
+						value="#{requisicaoManutencaoBean.requisicaoManut.dataCadastro}"
+						pattern="dd/MM/yyyy" size="10" required="true"
+						requiredMessage="O campo 'Data Cadastro' é obrigatório." />
+
+					<p:outputLabel value="Número:" for="numero" />
+					<p:inputMask id="numero" mask="9999/9999" maxlength="13" size="10"
+						value="#{requisicaoManutencaoBean.requisicaoManut.numero}" required="true" requiredMessage="O campo 'Número da Requisição' é obrigatório." />
+
+
+					<p:outputLabel value="Tipo do Serviço:" />
+					<p:inputText maxlength="30" size="20"
+						value="#{requisicaoManutencaoBean.requisicaoManut.tipoServico}" />
+
+					<p:outputLabel value="Local:" />
+					<p:inputText maxlength="30" size="20"
+						value="#{requisicaoManutencaoBean.requisicaoManut.local}" />
+
+					<p:outputLabel value="Descrição:" for="descricao" />
+					<p:inputTextarea id="descricao" required="true"
+						requiredMessage="O campo 'Descrição' é obrigatório."
+						value="#{requisicaoManutencaoBean.requisicaoManut.descricao}" />
+
+					<p:outputLabel value="Atendimento:" />
+					<p:calendar
+						value="#{requisicaoManutencaoBean.requisicaoManut.dataAtendimento}"
+						pattern="dd/MM/yyyy" size="10" />
+
+					<p:outputLabel value="Serviço:" />
+					<p:calendar
+						value="#{requisicaoManutencaoBean.requisicaoManut.dataServico}"
+						pattern="dd/MM/yyyy" size="10" />
+
+					<p:outputLabel value="Observação:" />
+					<p:inputTextarea
+						value="#{requisicaoManutencaoBean.requisicaoManut.observacao}"
+						autoResize="true" />
+
+					<p:outputLabel value="Finalizada:" />
+					<p:selectBooleanCheckbox
+						value="#{requisicaoManutencaoBean.requisicaoManut.finalizado}" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2" >
+					<p:commandButton value="Salvar"
+						actionListener="#{requisicaoManutencaoBean.salvar}"
+						update=":mensagem :formReqManutCad:pnlReqManutCad :formReqManut:tblReqManut"
+						oncomplete="PF('dialogo').hide();" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

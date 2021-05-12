@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formSalaListagem">
+			<p:panel header="Sala - Listagem" style="text-align:center">
+				<p:dataTable id="tblSalaListagem"
+					emptyMessage="Nenhum Registro Encontrado." style="text-align:left"
+					value="#{salaBean.listaSalas}" var="sala">
+					<f:facet name="footer">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							update=":formSalaCadastro:pnlSalaCadastro"
+							actionListener="#{salaBean.novo}" />
+					</f:facet>
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{sala.nome}" />
+					</p:column>
+
+					<p:column headerText="Capacidade">
+						<h:outputText value="#{sala.capacidade}" />
+					</p:column>
+
+					<p:column headerText="Datashow">
+						<h:outputText value="#{sala.datashow.tombo}" />
+					</p:column>
+
+					<p:column headerText="Som">
+						<h:outputText value="#{sala.som.tombo}" />
+					</p:column>
+
+					<p:column headerText="Estabilizador">
+						<h:outputText value="#{sala.estabilizador.tombo}" />
+					</p:column>
+
+					<p:column headerText="Ar Esq">
+						<h:outputText
+							value="#{sala.arEsq.tomboEvap} - #{sala.arEsq.tomboCond}" />
+					</p:column>
+
+					<p:column headerText="Ar Meio">
+						<h:outputText
+							value="#{sala.arMeio.tomboEvap} - #{sala.arMeio.tomboCond}" />
+					</p:column>
+
+					<p:column headerText="Ar Dir">
+						<h:outputText
+							value="#{sala.arDir.tomboEvap} - #{sala.arDir.tomboCond}" />
+					</p:column>
+
+					<p:column headerText="Equip.-FALTA">
+
+					</p:column>
+
+					<p:column headerText="Acessibilidade">
+						<h:outputText value="#{sala.acessibilidade}" />
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{salaBean.excluir}"
+							update=":mensagem :formSalaListagem:tblSalaListagem">
+							<p:confirm header="Confirmação" message="Deseja excluir o sala?"
+								icon="ui-icon-alert" />
+							<f:attribute name="salaSelecionado" value="#{sala}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{salaBean.editar}"
+							update=":mensagem :formSalaCadastro:pnlSalaCadastro"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="salaSelecionada" value="#{sala}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Sala- Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formSalaCadastro">
+				<h:panelGrid id="pnlSalaCadastro" columns="2">
+
+					<p:outputLabel value="Nome:" />
+					<p:inputText maxlength="30" size="15" value="#{salaBean.sala.nome}" />
+
+					<p:outputLabel value="Capacidade:" />
+					<p:inputText maxlength="15" size="3"
+						value="#{salaBean.sala.capacidade}" />
+
+					<p:outputLabel value="Datashow:" />
+					<p:selectOneMenu filter="true" value="#{salaBean.sala.datashow}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um datashow" />
+						<f:selectItems value="#{salaBean.datashows}" var="datashow"
+							itemValue="#{datashow}" itemLabel="#{datashow.tombo}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Som:" />
+					<p:selectOneMenu filter="true" value="#{salaBean.sala.som}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um som" />
+						<f:selectItems value="#{salaBean.sons}" var="som"
+							itemValue="#{som}" itemLabel="#{som.tombo}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Estabilizador:" />
+					<p:selectOneMenu filter="true"
+						value="#{salaBean.sala.estabilizador}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um estabilizador" />
+						<f:selectItems value="#{salaBean.estabilizadores}"
+							var="estabilizador" itemValue="#{estabilizador}"
+							itemLabel="#{estabilizador.tombo}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Ar Esq:" />
+					<p:selectOneMenu filter="true" value="#{salaBean.sala.arEsq}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true" itemLabel="Selecione um ar" />
+						<f:selectItems value="#{salaBean.ares}" var="ar" itemValue="#{ar}"
+							itemLabel="#{ar.tomboEvap}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Ar Meio:" />
+					<p:selectOneMenu filter="true" value="#{salaBean.sala.arMeio}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true" itemLabel="Selecione um ar" />
+						<f:selectItems value="#{salaBean.ares}" var="ar" itemValue="#{ar}"
+							itemLabel="#{ar.tomboEvap}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Ar Dir:" />
+					<p:selectOneMenu filter="true" value="#{salaBean.sala.arDir}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true" itemLabel="Selecione um ar" />
+						<f:selectItems value="#{salaBean.ares}" var="ar" itemValue="#{ar}"
+							itemLabel="#{ar.tomboEvap}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Acessível:" />
+					<p:selectBooleanCheckbox value="#{salaBean.sala.acessibilidade}" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" actionListener="#{salaBean.salvar}"
+						update=":mensagem :formSalaListagem:tblSalaListagem :formSalaCadastro:pnlSalaCadastro" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

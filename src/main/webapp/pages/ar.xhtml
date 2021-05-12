@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formArListagem">
+			<p:panel header="Ar Condicionado - Listagem"
+				style="text-align:center">
+				<p:dataTable id="tblArListagem"
+					emptyMessage="Nenhum Registro Encontrado." style="text-align:left"
+					paginator="true" paginatorPosition="bottom"
+					value="#{arBean.listaAres}" var="ar">
+					<f:facet name="footer">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							update="formArCadastro:pnlArCadastro"
+							actionListener="#{arBean.novo}" />
+					</f:facet>
+
+					<p:column headerText="Marca">
+						<h:outputText value="#{ar.marca}" />
+					</p:column>
+
+					<p:column headerText="Condensadora">
+						<h:outputLabel value="#{ar.tomboCond}" />
+					</p:column>
+
+					<p:column headerText="Evaporadora">
+						<h:outputLabel value="#{ar.tomboEvap}" />
+					</p:column>
+
+					<p:column headerText="BTU's">
+						<h:outputLabel value="#{ar.btu}" />
+					</p:column>
+
+					<p:column headerText="Sala" sortBy="#{ar.sala}">
+						<h:outputLabel value="#{ar.sala.nome}" />
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{arBean.excluir}"
+							update=":mensagem :formArListagem:tblArListagem">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir o ar-condicionado?" icon="ui-icon-alert" />
+							<f:attribute name="arSelecionado" value="#{ar}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{arBean.editar}"
+							update=":mensagem :formArCadastro:pnlArCadastro"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="arSelecionado" value="#{ar}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Ar Condicionado - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formArCadastro">
+				<h:panelGrid id="pnlArCadastro" columns="2">
+
+					<p:outputLabel value="Marca:" />
+					<p:inputText maxlength="30" size="30" value="#{arBean.ar.marca}" />
+
+					<p:outputLabel value="Condensadora:" />
+					<p:inputText maxlength="15" size="15"
+						value="#{arBean.ar.tomboCond}" />
+
+					<p:outputLabel value="Evaporadora:" />
+					<p:inputText maxlength="15" size="15"
+						value="#{arBean.ar.tomboEvap}" />
+
+
+					<p:outputLabel value="BTU's:" />
+					<p:inputText maxlength="10" size="10" value="#{arBean.ar.btu}" />
+
+					<p:outputLabel value="Sala:" />
+					<p:selectOneMenu filter="true" value="#{arBean.ar.sala}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma sala" />
+						<f:selectItems value="#{arBean.salas}" var="sala"
+							itemValue="#{sala}" itemLabel="#{sala.nome}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" actionListener="#{arBean.salvar}"
+						update=":mensagem :formArCadastro:pnlArCadastro :formArListagem:tblArListagem"
+						oncomplete="PF('dialogo').hide();" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

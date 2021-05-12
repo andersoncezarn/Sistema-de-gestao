@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formSomListagem">
+			<p:panel header="Som - Listagem" style="text-align:center">
+				<p:dataTable id="tblSomListagem"
+					emptyMessage="Nenhum Registro Encontrado." style="text-align:left"
+					paginator="true" paginatorPosition="bottom"
+					value="#{somBean.listaSons}" var="som">
+					<f:facet name="footer">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							update=":formSomCadastro:pnlSomCadastro"
+							actionListener="#{somBean.novo}" />
+					</f:facet>
+
+					<p:column headerText="Marca">
+						<h:outputText value="#{som.marca}" />
+					</p:column>
+
+					<p:column headerText="Tombamento">
+						<h:outputText value="#{som.tombo}" />
+					</p:column>
+
+					<p:column headerText="Sala">
+						<h:outputText value="#{som.sala.nome}" />
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{somBean.excluir}"
+							update=":mensagem :formSomListagem:tblSomListagem">
+							<p:confirm header="Confirmação" message="Deseja excluir o som?"
+								icon="ui-icon-alert" />
+							<f:attribute name="somSelecionado" value="#{som}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{somBean.editar}"
+							update=":mensagem :formSomCadastro:pnlSomCadastro"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="somSelecionado" value="#{som}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Datashow - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formSomCadastro">
+				<h:panelGrid id="pnlSomCadastro" columns="2">
+
+					<p:outputLabel value="Marca:" />
+					<p:inputText maxlength="30" size="30" value="#{somBean.som.marca}" />
+
+					<p:outputLabel value="Tombamento:" />
+					<p:inputText maxlength="30" size="30" value="#{somBean.som.tombo}" />
+
+					<p:outputLabel value="Sala:" />
+					<p:selectOneMenu filter="true" value="#{somBean.som.sala}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma sala" />
+						<f:selectItems value="#{somBean.salas}" var="sala"
+							itemValue="#{sala}" itemLabel="#{sala.nome}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" actionListener="#{somBean.salvar}"
+						update=":mensagem :formSomListagem:tblSomListagem :formSomCadastro:pnlSomCadastro"
+						oncomplete="PF('dialogo').hide();" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

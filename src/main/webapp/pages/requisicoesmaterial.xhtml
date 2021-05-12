@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formReqMat">
+			<p:panel>
+				<h2>Requisições de Material</h2>
+				<p:dataTable id="tblReqMat"
+					emptyMessage="Nenhum Registro Encontrado." style="text-align:left"
+					paginator="true" paginatorPosition="bottom"
+					value="#{requisicaoMaterialBean.requisicoes}" var="requisicao">
+					<f:facet name="footer">
+						<p:commandButton value="Cadastrar Novo Pedido"
+							oncomplete="PF('dialogo').show();"
+							update=":formReqMatCad:pnlReqMatCad"
+							actionListener="#{requisicaoMaterialBean.novo}"
+							icon="ui-icon-plus" />
+					</f:facet>
+
+					<p:column headerText="Data" sortBy="#{requisicao.data}" filterBy="#{requisicao.dataCadastro}" style="text-align: center" width="12%">
+						<h:outputText value="#{requisicao.dataCadastro}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Requisição" sortBy="#{requisicao.numero}" filterBy="#{requisicao.numero}" style="text-align: center" width="12%" >
+						<h:outputText value="#{requisicao.numero}" />
+					</p:column>
+
+					<p:column headerText="Tipo da Requisicao" style="text-align: center" sortBy="#{requisicao.tipoRequisicao}" filterBy="#{requisicao.tipoRequisicao}" width="17%">
+						<h:outputText value="#{requisicao.tipoRequisicao}" />
+					</p:column>
+
+					<p:column headerText="Valor" style="text-align: center" width="12%">
+						<h:outputText value="R$ #{requisicao.valor}">
+							<f:convertNumber pattern="0.00" locale="pt_BR" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Finalizada" style="text-align: center" width="12%">
+						<h:outputText value="#{requisicao.finalizado ? 'Sim' : 'Não'}" />
+					</p:column>
+
+					<p:column headerText="Observação">
+						<h:outputText value="#{requisicao.observacao}" />
+					</p:column>
+
+					<p:column headerText="Opções" style="text-align: center" width="12%">
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{requisicaoMaterialBean.editar}"
+							update=":mensagem :formReqMatCad:pnlReqMatCad"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="RequisicaoMatSelecionada"
+								value="#{requisicao}" />
+						</p:commandButton>
+						
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{requisicaoMaterialBean.excluir}"
+							update=":mensagem :formReqMat:tblReqMat">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir o Pedido?" icon="ui-icon-alert" />
+							<f:attribute name="RequisicaoMatSelecionada"
+								value="#{requisicao}" />
+						</p:commandButton>
+
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<p:dialog widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formReqMatCad">
+				<h2>Requisição de Material</h2>				
+				<h:panelGrid id="pnlReqMatCad" columns="2">
+
+					<p:outputLabel value="Tipo da Requisição:" />
+					<p:inputText maxlength="30" size="20"
+						value="#{requisicaoMaterialBean.requisicaoMat.tipoRequisicao}" />
+
+					<p:outputLabel value="Data:" />
+					<p:calendar
+						value="#{requisicaoMaterialBean.requisicaoMat.dataCadastro}" pattern="dd/MM/yyyy" size="20"/>
+
+					<p:outputLabel value="Número:" />
+					<p:inputMask mask="9999/9999" maxlength="13" size="20"
+						value="#{requisicaoMaterialBean.requisicaoMat.numero}" />
+
+
+					<p:outputLabel value="valor:" />
+					<p:inputText maxlength="8" size="20"
+						value="#{requisicaoMaterialBean.requisicaoMat.valor}"
+						converterMessage="informe um valor válido para o campo valor"
+						validatorMessage="Informe um valor entre 0 e 9999,99 para o campo preço">
+						<f:convertNumber pattern="0.00" locale="pt_BR"/>
+					</p:inputText>
+					
+					<p:outputLabel value="Observação:"/>
+					<p:inputTextarea value="#{requisicaoMaterialBean.requisicaoMat.observacao}" autoResize="true" maxlength="255" rows="5" />
+					
+					<p:outputLabel value="Finalizada:" />
+					<p:selectBooleanCheckbox value="#{requisicaoMaterialBean.requisicaoMat.finalizado}" />
+					
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{requisicaoMaterialBean.salvar}"
+						update=":mensagem :formReqMatCad:pnlReqMatCad :formReqMat:tblReqMat"
+						oncomplete="PF('dialogo').hide();" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

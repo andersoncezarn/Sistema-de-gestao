@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formFunListagem">
+		<p:panel>
+		<h2>Listagem de Funcionários</h2>
+				<p:dataTable id="tblFunListagem" 
+					emptyMessage="Nenhum Registro Encontrado." style="text-align:left"
+					paginator="true" paginatorPosition="bottom"
+					value="#{funcionarioBean.listaFuncionarios}" var="funcionario">
+					<f:facet name="footer">
+						<p:commandButton value="Cadastrar Novo" oncomplete="PF('dialogo').show();"
+							update=":formFunCadastro:pnlFunCadastro"
+							actionListener="#{funcionarioBean.novo}" icon="ui-icon-plus"  />
+					</f:facet>
+
+					<p:column headerText="Nome" sortBy="#{funcionario.nome}" style="text-align: center">
+						<h:outputText value="#{funcionario.nome}" />
+					</p:column>
+
+					<p:column headerText="Telefone" width="20%"  style="text-align: center">
+						<h:outputText value="#{funcionario.telefone}" />
+					</p:column>
+					
+					<p:column headerText="email" width="20%"  style="text-align: center">
+						<h:outputText value="#{funcionario.email}" />
+					</p:column>
+					
+					<p:column headerText="CPF" width="15%"  style="text-align: center">
+						<h:outputText value="#{funcionario.cpf}" />
+					</p:column>
+
+					<p:column headerText="Opções" width="10%"  style="text-align: center">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{funcionarioBean.excluir}"
+							update=":mensagem :formFunListagem:tblFunListagem">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir o funcionário?" icon="ui-icon-alert" />
+							<f:attribute name="funcionarioSelecionado" value="#{funcionario}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{funcionarioBean.editar}"
+							update=":mensagem :formFunCadastro:pnlFunCadastro"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="funcionarioSelecionado" value="#{funcionario}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Funcionários - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formFunCadastro">
+				<h:panelGrid id="pnlFunCadastro" columns="2">
+
+					<p:outputLabel value="Nome:" for="nome"/>
+					<p:inputText id="nome" maxlength="50" size="50"
+						value="#{funcionarioBean.funcionario.nome}" required="true" requiredMessage="O campo 'Nome' é obrigatório."/>
+
+					<p:outputLabel value="email:" />
+					<p:inputText maxlength="50" size="50"
+						value="#{funcionarioBean.funcionario.email}" />
+
+					<p:outputLabel value="Telefone:" />
+					<p:inputMask maxlength="14" size="16"
+						value="#{funcionarioBean.funcionario.telefone}" mask="(99)99999-9999"/>
+
+					<p:outputLabel value="CPF:" />
+					<p:inputMask maxlength="14" size="16"
+						value="#{funcionarioBean.funcionario.cpf}" mask="999.999.999-99"/>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{funcionarioBean.salvar}"
+						update=":mensagem :formFunCadastro:pnlFunCadastro :formFunListagem:tblFunListagem"
+						oncomplete="PF('dialogo').hide();" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

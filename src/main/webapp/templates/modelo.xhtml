@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>SETOR II</title>
+	<h:outputStylesheet library="css" name="estilos.css" />
+</h:head>
+<h:body>
+	<p:growl id="mensagem" />
+
+	<div id="geral">
+		<div id="topo">
+			<h1>GESTÃO DE REQUISIÇÕES E MATERIAIS</h1>
+		</div>
+
+		<div id="cabecalho">
+			<h:form id="formMenu">
+				<p:menubar style="border-radius: 15px">
+					<p:submenu label="Requisições" icon="ui-icon-document">
+						<p:menuitem value="Requisição de Material"
+							outcome="/pages/requisicoesmaterial.xhtml" />
+						<p:menuitem value="Requisição de Serviços"
+							outcome="/pages/requisicoesmanutencao.xhtml" />
+					</p:submenu>
+					<p:submenu label="Manutenções" icon="ui-icon-wrench">
+						<p:menuitem value="Manuenção de Ar Condicionado"
+							outcome="/pages/manutencaoAr.xhtml" />
+						<p:menuitem value="Manutenção GTI" />
+					</p:submenu>
+					<p:submenu label="Almoxarifado" icon="ui-icon-cart">
+						<p:menuitem value="Estoque do Almoxarifado"
+							outcome="/pages/estoque.xhtml" />
+						<p:menuitem value="Entrega de Material"
+							outcome="/pages/almoxarifado.xhtml" />
+					</p:submenu>
+					<p:submenu label="Mapa de Salas" icon="ui-icon-tag">
+						<p:menuitem value="Cadastrar Sala" outcome="/pages/sala.xhtml" />
+						<p:menuitem value="Mapa de Salas" outcome="/pages/mapasalas.xhtml" />
+					</p:submenu>
+					<p:submenu label="Equipamentos" icon="ui-icon-print">
+						<p:submenu label="Cadastrar">
+							<p:menuitem value="Datashow" outcome="/pages/datashow.xhtml" />
+							<p:menuitem value="Computador" />
+							<p:menuitem value="Ar" outcome="/pages/ar.xhtml" />
+							<p:menuitem value="Estabilizador"
+								outcome="/pages/estabilizador.xhtml" />
+							<p:menuitem value="Outros Equipamentos"
+								outcome="/pages/equipamento.xhtml" />
+						</p:submenu>
+					</p:submenu>
+
+					<p:submenu label="Funcionários" icon="ui-icon-person">
+						<p:menuitem value="Lista de Funcionários"
+							outcome="/pages/funcionario.xhtml" />
+						<p:menuitem value="Cadastrar Novo Usuário"
+							outcome="/pages/usuario.xhtml" />
+						<p:menuitem value="Cadastrar Novo Colaborador"
+							outcome="/pages/colaboradores.xhtml" />
+					</p:submenu>
+
+					<p:submenu label="Agenda" icon="ui-icon-note" />
+
+					<p:submenu label="Água" icon="ui-icon-clipboard">
+						<p:menuitem value="Abastecimento de Água" />
+					</p:submenu>
+
+					<f:facet name="options">
+						<p:commandButton icon="ui-icon-home" styleClass="ui-button-info"
+							action="/pages/principal.xhtml" />
+
+						<p:commandButton value="Sair"
+							actionListener="#{autenticacaoBean.deslogar}"
+							icon="ui-icon-power" styleClass="ui-button-info" />
+					</f:facet>
+
+				</p:menubar>
+			</h:form>
+		</div>
+
+		<div id="conteudo">
+			<ui:insert name="conteudo" />
+		</div>
+
+		<div id="rodape"></div>
+	</div>
+</h:body>
+</html>
