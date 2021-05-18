@@ -1,3 +1,3 @@
-# Sistema controle de expediente
-Aplicação em Java para gestão e controle de material de expediente.
+# Sistema para controle de expediente
+Aplicação Java web para gestão e controle de requisições e materiais de expediente.
 Tecnologias utilizadas: Eclipse, JSF, primefaces, hibernate, phaseListener,...
